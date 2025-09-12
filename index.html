@@ -3,234 +3,163 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Neon Red Game Switcher - RPSLSnake & Panda Snake</title>
+<title>RPSLS + Panda Snake (Hippo & Watermelon)</title>
 <style>
-  /* Neon Red & Black Theme */
   body {
-    margin: 0;
-    background-color: #000;
-    color: #ff073a;
+    background-color: black;
+    color: #ff073a; /* neon red */
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     text-align: center;
-    user-select: none;
-    -webkit-user-select: none;
+    margin: 0;
+    padding: 0;
   }
   h1 {
-    margin: 1rem 0 0.2rem 0;
-    text-shadow:
-      0 0 7px #ff073a,
-      0 0 10px #ff073a,
-      0 0 21px #ff073a,
-      0 0 42px #ff073a;
+    text-shadow: 0 0 8px #ff073a;
+    margin-top: 10px;
   }
-  /* Tab Switcher */
-  #tabSwitcher {
-    margin: 1rem 0;
+  .tab-buttons {
+    margin: 20px;
   }
-  button.tabBtn {
-    background: transparent;
+  button {
+    background-color: black;
     border: 2px solid #ff073a;
     color: #ff073a;
-    font-size: 1.1rem;
-    padding: 0.5rem 1.3rem;
-    margin: 0 0.5rem;
-    border-radius: 12px;
+    padding: 10px 20px;
+    margin: 0 10px;
+    font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    border-radius: 5px;
+    transition: 0.3s;
   }
-  button.tabBtn.active,
-  button.tabBtn:hover {
+  button:hover {
     background-color: #ff073a;
-    color: #000;
-  }
-  /* Extended RPSLSnake Game Styles */
-  #rpsGame {
-    padding: 1rem;
-    max-width: 700px;
-    margin: 0 auto;
-  }
-  .choices {
-    margin: 1.5rem 0;
-  }
-  button.choice {
-    font-size: 1.2rem;
-    margin: 0 0.6rem;
-    padding: 1rem 1.3rem;
-    cursor: pointer;
-    border: none;
-    border-radius: 12px;
-    background-color: transparent;
-    color: #ff073a;
-    border: 2px solid #ff073a;
-    transition: background-color 0.3s ease;
-    width: 110px;
-    height: 90px;
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  button.choice:hover:not(:disabled) {
-    background-color: #ff073a;
-    color: #000;
-  }
-  button.choice:disabled {
-    border-color: #600000;
-    color: #600000;
-    cursor: not-allowed;
-  }
-  #result {
-    font-size: 1.8rem;
-    margin: 1.5rem 0;
-    min-height: 3rem;
-    text-shadow:
-      0 0 5px #ff073a,
-      0 0 10px #ff073a;
-  }
-  #scoreboard {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
-  }
-  #roundCounter {
-    font-size: 1rem;
-    margin-bottom: 1.5rem;
-    font-style: italic;
-    text-shadow: 0 0 5px #ff073a;
-  }
-  #restartBtn {
-    padding: 0.8rem 2rem;
-    font-size: 1.2rem;
-    background-color: #ff073a;
-    border: none;
-    border-radius: 10px;
     color: black;
-    cursor: pointer;
-    display: none;
-    box-shadow: 0 0 10px #ff073a;
-    transition: background-color 0.3s ease;
   }
-  #restartBtn:hover {
-    background-color: #ff3953;
-  }
-  .icon {
-    font-size: 2.5rem;
-    margin-bottom: 6px;
-  }
-  #computerChoiceDisplay {
-    margin-top: 1rem;
-    font-size: 1.2rem;
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    align-items: center;
-  }
-  #computerChoiceDisplay .icon {
-    font-size: 3rem;
-  }
-
-  /* Snake Game Container */
-  #snakeGame {
+  #rpsGame, #snakeGame {
     display: none;
     max-width: 600px;
-    margin: 0 auto;
-    padding: 1rem;
+    margin: auto;
   }
+  #rpsGame button.choice {
+    font-size: 24px;
+    margin: 5px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 3px solid #ff073a;
+    background: black;
+    color: #ff073a;
+    text-shadow: 0 0 8px #ff073a;
+  }
+  #rpsGame button.choice:hover:not(:disabled) {
+    background-color: #ff073a;
+    color: black;
+  }
+  #result {
+    margin: 20px;
+    font-size: 20px;
+    min-height: 40px;
+    text-shadow: 0 0 12px #ff073a;
+  }
+  #computerChoiceDisplay {
+    margin-top: 10px;
+    font-size: 18px;
+  }
+  #computerChoiceDisplay .icon {
+    font-size: 50px;
+  }
+  #scores {
+    font-size: 18px;
+    margin-top: 10px;
+  }
+  #restartBtn {
+    display: none;
+    margin-top: 15px;
+  }
+
+  /* Snake Game Styles */
   #snakeCanvas {
     background-color: black;
     border: 3px solid #ff073a;
-    border-radius: 10px;
     display: block;
-    margin: 0 auto;
-    box-shadow:
-      0 0 10px #ff073a,
-      0 0 20px #ff073a,
-      0 0 30px #ff073a;
+    margin: 20px auto;
+    box-shadow: 0 0 20px #ff073a;
   }
   #snakeScore {
-    margin-top: 1rem;
-    font-size: 1.3rem;
-    text-shadow: 0 0 5px #ff073a;
+    font-size: 22px;
+    margin: 10px 0;
+    text-shadow: 0 0 12px #ff073a;
   }
   #snakeRestartBtn {
-    margin-top: 1rem;
-    padding: 0.8rem 2rem;
-    font-size: 1.2rem;
-    background-color: #ff073a;
-    border: none;
-    border-radius: 10px;
-    color: black;
+    display: none;
+    margin: 15px auto;
+    padding: 10px 20px;
+    font-size: 16px;
     cursor: pointer;
-    box-shadow: 0 0 10px #ff073a;
-    transition: background-color 0.3s ease;
+    background-color: black;
+    border: 2px solid #ff073a;
+    color: #ff073a;
+    border-radius: 5px;
   }
   #snakeRestartBtn:hover {
-    background-color: #ff3953;
+    background-color: #ff073a;
+    color: black;
   }
 </style>
 </head>
 <body>
 
-<h1>Neon Red Game Switcher</h1>
-<div id="tabSwitcher">
-  <button class="tabBtn active" id="rpsTabBtn">RPSLSnake Game</button>
-  <button class="tabBtn" id="snakeTabBtn">Panda Snake Game</button>
+<h1>Rock Paper Scissors Lizard Spock + Snake (Hippo Edition)</h1>
+<div class="tab-buttons">
+  <button id="btnRPS">RPSLS Game</button>
+  <button id="btnSnake">Snake Game</button>
 </div>
 
-<!-- RPSLSnake Game -->
+<!-- RPSLS Game -->
 <div id="rpsGame">
-  <div id="roundCounter">Round 0 of 5</div>
-
-  <div class="choices">
-    <button class="choice" id="rock"><div class="icon">✊</div>Rock</button>
-    <button class="choice" id="paper"><div class="icon">✋</div>Paper</button>
-    <button class="choice" id="scissors"><div class="icon">✌️</div>Scissors</button>
-    <button class="choice" id="lizard"><div class="icon">🦎</div>Lizard</button>
-    <button class="choice" id="spock"><div class="icon">🖖</div>Spock</button>
-    <button class="choice" id="snake"><div class="icon">🐍</div>Snake</button>
+  <div>
+    <button class="choice" id="rock">✊<br>Rock</button>
+    <button class="choice" id="paper">✋<br>Paper</button>
+    <button class="choice" id="scissors">✌️<br>Scissors</button>
+    <button class="choice" id="lizard">🦎<br>Lizard</button>
+    <button class="choice" id="spock">🖖<br>Spock</button>
+    <button class="choice" id="snake">🐍<br>Snake</button>
   </div>
-
-  <div id="result"></div>
+  <div id="result">Make your choice!</div>
   <div id="computerChoiceDisplay"></div>
-
-  <div id="scoreboard">
-    Player: <span id="playerScore">0</span> - Computer: <span id="computerScore">0</span>
+  <div id="scores">
+    Player: <span id="playerScore">0</span> | Computer: <span id="computerScore">0</span>
   </div>
-
+  <div id="roundCounter">Round 0 of 5</div>
   <button id="restartBtn">Restart Game</button>
 </div>
 
-<!-- Panda Snake Game -->
+<!-- Snake Game -->
 <div id="snakeGame">
   <canvas id="snakeCanvas" width="400" height="400"></canvas>
   <div id="snakeScore">Score: 0</div>
   <button id="snakeRestartBtn">Restart Snake Game</button>
+  <p>Use arrow keys to move the hippo!</p>
 </div>
 
 <script>
-  // --- Tab Switcher ---
-  const rpsTabBtn = document.getElementById('rpsTabBtn');
-  const snakeTabBtn = document.getElementById('snakeTabBtn');
-  const rpsGameDiv = document.getElementById('rpsGame');
-  const snakeGameDiv = document.getElementById('snakeGame');
+  // Tab Switching
+  const rpsDiv = document.getElementById('rpsGame');
+  const snakeDiv = document.getElementById('snakeGame');
+  const btnRPS = document.getElementById('btnRPS');
+  const btnSnake = document.getElementById('btnSnake');
 
   function switchToRPS() {
-    rpsTabBtn.classList.add('active');
-    snakeTabBtn.classList.remove('active');
-    rpsGameDiv.style.display = 'block';
-    snakeGameDiv.style.display = 'none';
-    resetRPSGame();
+    rpsDiv.style.display = 'block';
+    snakeDiv.style.display = 'none';
   }
-
   function switchToSnake() {
-    snakeTabBtn.classList.add('active');
-    rpsTabBtn.classList.remove('active');
-    rpsGameDiv.style.display = 'none';
-    snakeGameDiv.style.display = 'block';
-    resetSnakeGame();
+    rpsDiv.style.display = 'none';
+    snakeDiv.style.display = 'block';
   }
 
-  rpsTabBtn.addEventListener('click', switchToRPS);
-  snakeTabBtn.addEventListener('click', switchToSnake);
+  btnRPS.addEventListener('click', switchToRPS);
+  btnSnake.addEventListener('click', switchToSnake);
 
   // -------------- RPSLSnake Game Logic ----------------
   let playerScore = 0;
@@ -402,16 +331,17 @@
   // Initialize RPS game on page load
   resetRPSGame();
 
-  // -------------- Panda Snake Game Logic ----------------
+  // -------------- Hippo Snake Game Logic ----------------
   const canvas = document.getElementById('snakeCanvas');
   const ctx = canvas.getContext('2d');
   const box = 20; // size of snake segment and food
 
   let snake = [];
-  let pandaImg = new Image();
-  pandaImg.src = 'https://i.imgur.com/1OGFGPj.png'; // cute panda head icon (transparent PNG)
-  let bambooImg = new Image();
-  bambooImg.src = 'https://i.imgur.com/K0U1Ugo.png'; // bamboo icon (transparent PNG)
+  let hippoImg = new Image();
+  hippoImg.src = 'https://i.imgur.com/yHPQPR2.png'; // hippo head icon
+
+  let watermelonImg = new Image();
+  watermelonImg.src = 'https://i.imgur.com/zfXXAxN.png'; // watermelon icon
 
   let food = {};
   let direction = 'RIGHT';
@@ -431,14 +361,13 @@
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw bamboo (food)
-    ctx.drawImage(bambooImg, food.x, food.y, box, box);
+    // Draw watermelon (food)
+    ctx.drawImage(watermelonImg, food.x, food.y, box, box);
 
-    // Draw snake (panda)
+    // Draw snake (hippo)
     for (let i = 0; i < snake.length; i++) {
-      // draw panda icon at head, simple green squares for rest
       if (i === 0) {
-        ctx.drawImage(pandaImg, snake[i].x, snake[i].y, box, box);
+        ctx.drawImage(hippoImg, snake[i].x, snake[i].y, box, box);
       } else {
         ctx.fillStyle = '#ff073a';
         ctx.shadowColor = '#ff073a';
@@ -461,7 +390,7 @@
     else if (direction === 'UP') headY -= box;
     else if (direction === 'DOWN') headY += box;
 
-    // Check wall collision - wrap around edges
+    // Wrap around edges
     if (headX >= canvas.width) headX = 0;
     else if (headX < 0) headX = canvas.width - box;
     if (headY >= canvas.height) headY = 0;
@@ -512,7 +441,7 @@
     gameInterval = setInterval(gameLoop, 120);
   }
 
-  // Keyboard controls
+  // Keyboard controls for snake
   window.addEventListener('keydown', e => {
     if (!gameRunning) return;
 
@@ -524,10 +453,9 @@
 
   document.getElementById('snakeRestartBtn').addEventListener('click', resetSnakeGame);
 
-  // Initially start with RPS game
+  // Start with RPS game visible
   switchToRPS();
 
 </script>
-
 </body>
 </html>
