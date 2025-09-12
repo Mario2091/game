@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Rock Paper Scissors - Best of 5</title>
+<title>Extended Rock-Paper-Scissors-Lizard-Spock-Snake</title>
 <style>
   body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #667eea, #764ba2);
+    background: linear-gradient(135deg, #3a6186, #89253e);
     color: white;
     text-align: center;
     padding: 2rem;
@@ -19,15 +19,22 @@
     margin: 1.5rem 0;
   }
   button.choice {
-    font-size: 1.5rem;
-    margin: 0 1rem;
-    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    margin: 0 0.6rem;
+    padding: 1rem 1.3rem;
     cursor: pointer;
     border: none;
-    border-radius: 10px;
+    border-radius: 12px;
     background-color: #8e44ad;
     color: white;
     transition: background-color 0.3s ease;
+    width: 110px;
+    height: 90px;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
   }
   button.choice:hover:not(:disabled) {
     background-color: #a569bd;
@@ -37,9 +44,9 @@
     cursor: not-allowed;
   }
   #result {
-    font-size: 2rem;
+    font-size: 1.8rem;
     margin: 1.5rem 0;
-    min-height: 2.5rem;
+    min-height: 3rem;
   }
   #scoreboard {
     font-size: 1.2rem;
@@ -63,20 +70,40 @@
   #restartBtn:hover {
     background-color: #2ecc71;
   }
+  .icon {
+    font-size: 2.5rem;
+    margin-bottom: 6px;
+  }
+  #computerChoiceDisplay {
+    margin-top: 1rem;
+    font-size: 1.2rem;
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    align-items: center;
+  }
+  #computerChoiceDisplay .icon {
+    font-size: 3rem;
+  }
 </style>
 </head>
 <body>
 
-<h1>Rock Paper Scissors: Best of 5</h1>
+<h1>Extended Rock-Paper-Scissors-Lizard-Spock-Snake</h1>
 <div id="roundCounter">Round 0 of 5</div>
 
 <div class="choices">
-  <button class="choice" id="rock">✊ Rock</button>
-  <button class="choice" id="paper">✋ Paper</button>
-  <button class="choice" id="scissors">✌️ Scissors</button>
+  <button class="choice" id="rock"><div class="icon">✊</div>Rock</button>
+  <button class="choice" id="paper"><div class="icon">✋</div>Paper</button>
+  <button class="choice" id="scissors"><div class="icon">✌️</div>Scissors</button>
+  <button class="choice" id="lizard"><div class="icon">🦎</div>Lizard</button>
+  <button class="choice" id="spock"><div class="icon">🖖</div>Spock</button>
+  <button class="choice" id="snake"><div class="icon">🐍</div>Snake</button>
 </div>
 
 <div id="result"></div>
+
+<div id="computerChoiceDisplay"></div>
 
 <div id="scoreboard">
   Player: <span id="playerScore">0</span> - Computer: <span id="computerScore">0</span>
@@ -85,35 +112,70 @@
 <button id="restartBtn">Restart Game</button>
 
 <script>
-  // Variables for game state
   let playerScore = 0;
   let computerScore = 0;
   let roundNumber = 0;
   const maxRounds = 5;
   const winScore = 3;
 
+  const choices = ['rock', 'paper', 'scissors', 'lizard', 'spock', 'snake'];
+
+  const choiceIcons = {
+    rock: '✊',
+    paper: '✋',
+    scissors: '✌️',
+    lizard: '🦎',
+    spock: '🖖',
+    snake: '🐍'
+  };
+
+  // Messages describing who beats who
+  const interactionMessages = {
+    'rockscissors': 'Rock crushes Scissors',
+    'rocksnake': 'Rock crushes Snake',
+    'paperrock': 'Paper covers Rock',
+    'paperspock': 'Paper disproves Spock',
+    'scissorspaper': 'Scissors cut Paper',
+    'scissorssnake': 'Scissors decapitate Snake',
+    'lizardpaper': 'Lizard eats Paper',
+    'lizardspock': 'Lizard poisons Spock',
+    'spockrock': 'Spock vaporizes Rock',
+    'spockscissors': 'Spock smashes Scissors',
+    'snakepaper': 'Snake bites Paper',
+    'snakelizard': 'Snake bites Lizard'
+  };
+
+  // Mapping each choice to what it beats (array)
+  const beats = {
+    rock: ['scissors', 'snake'],
+    paper: ['rock', 'spock'],
+    scissors: ['paper', 'snake'],
+    lizard: ['paper', 'spock'],
+    spock: ['rock', 'scissors'],
+    snake: ['paper', 'lizard']
+  };
+
   // DOM Elements
-  const choices = document.querySelectorAll('.choice');
+  const buttons = document.querySelectorAll('.choice');
   const resultDiv = document.getElementById('result');
   const playerScoreSpan = document.getElementById('playerScore');
   const computerScoreSpan = document.getElementById('computerScore');
   const roundCounter = document.getElementById('roundCounter');
   const restartBtn = document.getElementById('restartBtn');
+  const computerChoiceDisplay = document.getElementById('computerChoiceDisplay');
 
-  // Sound Effects
+  // Sounds
   const winSound = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg');
   const loseSound = new Audio('https://actions.google.com/sounds/v1/cartoon/boing.ogg');
-
-  // Choices Array
-  const options = ['rock', 'paper', 'scissors'];
+  const drawSound = new Audio('https://actions.google.com/sounds/v1/cartoon/pop.ogg');
 
   function computerPlay() {
-    const randomIndex = Math.floor(Math.random() * options.length);
-    return options[randomIndex];
+    const randomIndex = Math.floor(Math.random() * choices.length);
+    return choices[randomIndex];
   }
 
   function disableChoices(state) {
-    choices.forEach(btn => btn.disabled = state);
+    buttons.forEach(btn => btn.disabled = state);
   }
 
   function updateScores() {
@@ -125,46 +187,58 @@
     roundCounter.textContent = `Round ${roundNumber} of ${maxRounds}`;
   }
 
-  function determineWinner(playerSelection, computerSelection) {
-    if (playerSelection === computerSelection) {
-      return 'draw';
-    }
-    if (
-      (playerSelection === 'rock' && computerSelection === 'scissors') ||
-      (playerSelection === 'scissors' && computerSelection === 'paper') ||
-      (playerSelection === 'paper' && computerSelection === 'rock')
-    ) {
-      return 'player';
-    } else {
-      return 'computer';
-    }
+  // Show computer's choice visually
+  function showComputerChoice(choice) {
+    computerChoiceDisplay.innerHTML = `
+      <div>
+        <div class="icon">${choiceIcons[choice]}</div>
+        <div>Computer chose ${choice.charAt(0).toUpperCase() + choice.slice(1)}</div>
+      </div>
+    `;
   }
 
-  function playRound(playerSelection) {
+  // Get interaction message for winner and loser
+  function getInteractionMessage(winner, loser) {
+    return interactionMessages[winner + loser] || interactionMessages[loser + winner] || '';
+  }
+
+  // Determine winner logic
+  function determineWinner(player, computer) {
+    if (player === computer) return 'draw';
+    if (beats[player].includes(computer)) return 'player';
+    if (beats[computer].includes(player)) return 'computer';
+    return 'draw'; // fallback
+  }
+
+  function playRound(playerChoice) {
     disableChoices(true);
     roundNumber++;
     updateRoundCounter();
     resultDiv.textContent = "Computer is choosing...";
-    
+    computerChoiceDisplay.innerHTML = "";
+
     setTimeout(() => {
-      const computerSelection = computerPlay();
-      const winner = determineWinner(playerSelection, computerSelection);
+      const computerChoice = computerPlay();
+      showComputerChoice(computerChoice);
+      const winner = determineWinner(playerChoice, computerChoice);
 
       if (winner === 'player') {
         playerScore++;
-        resultDiv.textContent = `You Win! ${playerSelection} beats ${computerSelection}.`;
+        const msg = getInteractionMessage(playerChoice, computerChoice);
+        resultDiv.textContent = `You Win! ${msg}.`;
         winSound.play();
       } else if (winner === 'computer') {
         computerScore++;
-        resultDiv.textContent = `You Lose! ${computerSelection} beats ${playerSelection}.`;
+        const msg = getInteractionMessage(computerChoice, playerChoice);
+        resultDiv.textContent = `You Lose! ${msg}.`;
         loseSound.play();
       } else {
-        resultDiv.textContent = `It's a Draw! Both chose ${playerSelection}.`;
+        resultDiv.textContent = `It's a Draw! Both chose ${playerChoice}.`;
+        drawSound.play();
       }
 
       updateScores();
 
-      // Check if someone won best of 5
       if (playerScore === winScore) {
         resultDiv.textContent = "🎉 You won the game! Congratulations!";
         endGame();
@@ -172,7 +246,6 @@
         resultDiv.textContent = "💻 Computer won the game! Try again.";
         endGame();
       } else if (roundNumber >= maxRounds) {
-        // If max rounds reached but no one reached winScore (possible if many draws)
         if (playerScore > computerScore) {
           resultDiv.textContent = "🎉 You won the game! Congratulations!";
         } else if (computerScore > playerScore) {
@@ -184,7 +257,7 @@
       } else {
         disableChoices(false);
       }
-    }, 1000);
+    }, 1200);
   }
 
   function endGame() {
@@ -199,12 +272,12 @@
     updateScores();
     updateRoundCounter();
     resultDiv.textContent = "Make your choice!";
+    computerChoiceDisplay.innerHTML = "";
     disableChoices(false);
     restartBtn.style.display = 'none';
   }
 
-  // Event Listeners for choices
-  choices.forEach(button => {
+  buttons.forEach(button => {
     button.addEventListener('click', () => {
       playRound(button.id);
     });
@@ -212,7 +285,6 @@
 
   restartBtn.addEventListener('click', resetGame);
 
-  // Initialize game
   resetGame();
 </script>
 
