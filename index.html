@@ -1,347 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>RPSLS + Panda Snake (Hippo & Watermelon)</title>
-<style>
-  body {
-    background-color: black;
-    color: #ff073a; /* neon red */
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    text-align: center;
-    margin: 0;
-    padding: 0;
-  }
-  h1 {
-    text-shadow: 0 0 8px #ff073a;
-    margin-top: 10px;
-  }
-  .tab-buttons {
-    margin: 20px;
-  }
-  button {
-    background-color: black;
-    border: 2px solid #ff073a;
-    color: #ff073a;
-    padding: 10px 20px;
-    margin: 0 10px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: 0.3s;
-  }
-  button:hover {
-    background-color: #ff073a;
-    color: black;
-  }
-  #rpsGame, #snakeGame {
-    display: none;
-    max-width: 600px;
-    margin: auto;
-  }
-  #rpsGame button.choice {
-    font-size: 24px;
-    margin: 5px;
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    border: 3px solid #ff073a;
-    background: black;
-    color: #ff073a;
-    text-shadow: 0 0 8px #ff073a;
-  }
-  #rpsGame button.choice:hover:not(:disabled) {
-    background-color: #ff073a;
-    color: black;
-  }
-  #result {
-    margin: 20px;
-    font-size: 20px;
-    min-height: 40px;
-    text-shadow: 0 0 12px #ff073a;
-  }
-  #computerChoiceDisplay {
-    margin-top: 10px;
-    font-size: 18px;
-  }
-  #computerChoiceDisplay .icon {
-    font-size: 50px;
-  }
-  #scores {
-    font-size: 18px;
-    margin-top: 10px;
-  }
-  #restartBtn {
-    display: none;
-    margin-top: 15px;
-  }
-
-  /* Snake Game Styles */
-  #snakeCanvas {
-    background-color: black;
-    border: 3px solid #ff073a;
-    display: block;
-    margin: 20px auto;
-    box-shadow: 0 0 20px #ff073a;
-  }
-  #snakeScore {
-    font-size: 22px;
-    margin: 10px 0;
-    text-shadow: 0 0 12px #ff073a;
-  }
-  #snakeRestartBtn {
-    display: none;
-    margin: 15px auto;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    background-color: black;
-    border: 2px solid #ff073a;
-    color: #ff073a;
-    border-radius: 5px;
-  }
-  #snakeRestartBtn:hover {
-    background-color: #ff073a;
-    color: black;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <title>RPSLS & Hippo Snake</title>
+  <style>
+    body {
+      background: black;
+      color: white;
+      text-align: center;
+      font-family: Arial, sans-serif;
+    }
+    #gameButtons button {
+      margin: 5px;
+      padding: 10px;
+      font-size: 18px;
+    }
+    #snakeCanvas {
+      background: black;
+      border: 2px solid white;
+      display: block;
+      margin: 20px auto;
+    }
+    #snakeRestartBtn {
+      display: none;
+      padding: 10px;
+      margin: 10px;
+      font-size: 18px;
+    }
+    .tabButtons button {
+      padding: 10px;
+      margin: 5px;
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
-
-<h1>Rock Paper Scissors Lizard Spock + Snake (Hippo Edition)</h1>
-<div class="tab-buttons">
-  <button id="btnRPS">RPSLS Game</button>
-  <button id="btnSnake">Snake Game</button>
-</div>
-
-<!-- RPSLS Game -->
-<div id="rpsGame">
-  <div>
-    <button class="choice" id="rock">✊<br>Rock</button>
-    <button class="choice" id="paper">✋<br>Paper</button>
-    <button class="choice" id="scissors">✌️<br>Scissors</button>
-    <button class="choice" id="lizard">🦎<br>Lizard</button>
-    <button class="choice" id="spock">🖖<br>Spock</button>
-    <button class="choice" id="snake">🐍<br>Snake</button>
+  <h1>Game Hub</h1>
+  
+  <div class="tabButtons">
+    <button id="btnRPS">RPSLS Game</button>
+    <button id="btnSnake">Hippo Snake</button>
   </div>
-  <div id="result">Make your choice!</div>
-  <div id="computerChoiceDisplay"></div>
-  <div id="scores">
-    Player: <span id="playerScore">0</span> | Computer: <span id="computerScore">0</span>
-  </div>
-  <div id="roundCounter">Round 0 of 5</div>
-  <button id="restartBtn">Restart Game</button>
-</div>
 
-<!-- Snake Game -->
-<div id="snakeGame">
-  <canvas id="snakeCanvas" width="400" height="400"></canvas>
-  <div id="snakeScore">Score: 0</div>
-  <button id="snakeRestartBtn">Restart Snake Game</button>
-  <p>Use arrow keys to move the hippo!</p>
-</div>
+  <!-- RPSLS GAME -->
+  <div id="rpsSection">
+    <h2>Rock Paper Scissors Lizard Spock</h2>
+    <div id="gameButtons">
+      <button onclick="playRPS('rock')">Rock</button>
+      <button onclick="playRPS('paper')">Paper</button>
+      <button onclick="playRPS('scissors')">Scissors</button>
+      <button onclick="playRPS('lizard')">Lizard</button>
+      <button onclick="playRPS('spock')">Spock</button>
+    </div>
+    <p id="result"></p>
+  </div>
+
+  <!-- HIPPO SNAKE GAME -->
+  <div id="snakeSection" style="display:none;">
+    <h2>Hippo Snake</h2>
+    <canvas id="snakeCanvas" width="400" height="400"></canvas>
+    <p id="snakeScore">Score: 0</p>
+    <button id="snakeRestartBtn">Restart Game</button>
+  </div>
 
 <script>
-  // Tab Switching
-  const rpsDiv = document.getElementById('rpsGame');
-  const snakeDiv = document.getElementById('snakeGame');
-  const btnRPS = document.getElementById('btnRPS');
-  const btnSnake = document.getElementById('btnSnake');
-
-  function switchToRPS() {
-    rpsDiv.style.display = 'block';
-    snakeDiv.style.display = 'none';
-  }
-  function switchToSnake() {
-    rpsDiv.style.display = 'none';
-    snakeDiv.style.display = 'block';
-  }
-
-  btnRPS.addEventListener('click', switchToRPS);
-  btnSnake.addEventListener('click', switchToSnake);
-
-  // -------------- RPSLSnake Game Logic ----------------
-  let playerScore = 0;
-  let computerScore = 0;
-  let roundNumber = 0;
-  const maxRounds = 5;
-  const winScore = 3;
-
-  const choices = ['rock', 'paper', 'scissors', 'lizard', 'spock', 'snake'];
-
-  const choiceIcons = {
-    rock: '✊',
-    paper: '✋',
-    scissors: '✌️',
-    lizard: '🦎',
-    spock: '🖖',
-    snake: '🐍'
+  // ---------------- RPSLS Game ----------------
+  const choices = ["rock", "paper", "scissors", "lizard", "spock"];
+  const rules = {
+    rock: ["scissors", "lizard"],
+    paper: ["rock", "spock"],
+    scissors: ["paper", "lizard"],
+    lizard: ["spock", "paper"],
+    spock: ["scissors", "rock"]
   };
 
-  const interactionMessages = {
-    'rockscissors': 'Rock crushes Scissors',
-    'rocksnake': 'Rock crushes Snake',
-    'paperrock': 'Paper covers Rock',
-    'paperspock': 'Paper disproves Spock',
-    'scissorspaper': 'Scissors cut Paper',
-    'scissorssnake': 'Scissors decapitate Snake',
-    'lizardpaper': 'Lizard eats Paper',
-    'lizardspock': 'Lizard poisons Spock',
-    'spockrock': 'Spock vaporizes Rock',
-    'spockscissors': 'Spock smashes Scissors',
-    'snakepaper': 'Snake bites Paper',
-    'snakelizard': 'Snake bites Lizard'
-  };
-
-  const beats = {
-    rock: ['scissors', 'snake'],
-    paper: ['rock', 'spock'],
-    scissors: ['paper', 'snake'],
-    lizard: ['paper', 'spock'],
-    spock: ['rock', 'scissors'],
-    snake: ['paper', 'lizard']
-  };
-
-  const buttons = document.querySelectorAll('#rpsGame .choice');
-  const resultDiv = document.getElementById('result');
-  const playerScoreSpan = document.getElementById('playerScore');
-  const computerScoreSpan = document.getElementById('computerScore');
-  const roundCounter = document.getElementById('roundCounter');
-  const restartBtn = document.getElementById('restartBtn');
-  const computerChoiceDisplay = document.getElementById('computerChoiceDisplay');
-
-  const winSound = new Audio('https://actions.google.com/sounds/v1/cartoon/clang_and_wobble.ogg');
-  const loseSound = new Audio('https://actions.google.com/sounds/v1/cartoon/boing.ogg');
-  const drawSound = new Audio('https://actions.google.com/sounds/v1/cartoon/pop.ogg');
-
-  function computerPlay() {
-    const randomIndex = Math.floor(Math.random() * choices.length);
-    return choices[randomIndex];
+  function playRPS(playerChoice) {
+    const compChoice = choices[Math.floor(Math.random() * choices.length)];
+    let outcome = "";
+    if (playerChoice === compChoice) {
+      outcome = "It's a draw!";
+    } else if (rules[playerChoice].includes(compChoice)) {
+      outcome = `You win! ${playerChoice} beats ${compChoice}`;
+    } else {
+      outcome = `You lose! ${compChoice} beats ${playerChoice}`;
+    }
+    document.getElementById("result").textContent = outcome;
   }
 
-  function disableChoices(state) {
-    buttons.forEach(btn => btn.disabled = state);
-  }
-
-  function updateScores() {
-    playerScoreSpan.textContent = playerScore;
-    computerScoreSpan.textContent = computerScore;
-  }
-
-  function updateRoundCounter() {
-    roundCounter.textContent = `Round ${roundNumber} of ${maxRounds}`;
-  }
-
-  function showComputerChoice(choice) {
-    computerChoiceDisplay.innerHTML = `
-      <div>
-        <div class="icon">${choiceIcons[choice]}</div>
-        <div>Computer chose ${choice.charAt(0).toUpperCase() + choice.slice(1)}</div>
-      </div>
-    `;
-  }
-
-  function getInteractionMessage(winner, loser) {
-    return interactionMessages[winner + loser] || interactionMessages[loser + winner] || '';
-  }
-
-  function determineWinner(player, computer) {
-    if (player === computer) return 'draw';
-    if (beats[player].includes(computer)) return 'player';
-    if (beats[computer].includes(player)) return 'computer';
-    return 'draw';
-  }
-
-  function playRound(playerChoice) {
-    disableChoices(true);
-    roundNumber++;
-    updateRoundCounter();
-    resultDiv.textContent = "Computer is choosing...";
-    computerChoiceDisplay.innerHTML = "";
-
-    setTimeout(() => {
-      const computerChoice = computerPlay();
-      showComputerChoice(computerChoice);
-      const winner = determineWinner(playerChoice, computerChoice);
-
-      if (winner === 'player') {
-        playerScore++;
-        const msg = getInteractionMessage(playerChoice, computerChoice);
-        resultDiv.textContent = `You Win! ${msg}.`;
-        winSound.play();
-      } else if (winner === 'computer') {
-        computerScore++;
-        const msg = getInteractionMessage(computerChoice, playerChoice);
-        resultDiv.textContent = `You Lose! ${msg}.`;
-        loseSound.play();
-      } else {
-        resultDiv.textContent = `It's a Draw! Both chose ${playerChoice}.`;
-        drawSound.play();
-      }
-
-      updateScores();
-
-      if (playerScore === winScore) {
-        resultDiv.textContent = "🎉 You won the game! Congratulations!";
-        endGame();
-      } else if (computerScore === winScore) {
-        resultDiv.textContent = "💻 Computer won the game! Try again.";
-        endGame();
-      } else if (roundNumber >= maxRounds) {
-        if (playerScore > computerScore) {
-          resultDiv.textContent = "🎉 You won the game! Congratulations!";
-        } else if (computerScore > playerScore) {
-          resultDiv.textContent = "💻 Computer won the game! Try again.";
-        } else {
-          resultDiv.textContent = "It's a tie game! Well played!";
-        }
-        endGame();
-      } else {
-        disableChoices(false);
-      }
-    }, 1200);
-  }
-
-  function endGame() {
-    disableChoices(true);
-    restartBtn.style.display = 'inline-block';
-  }
-
-  function resetRPSGame() {
-    playerScore = 0;
-    computerScore = 0;
-    roundNumber = 0;
-    updateScores();
-    updateRoundCounter();
-    resultDiv.textContent = "Make your choice!";
-    computerChoiceDisplay.innerHTML = "";
-    disableChoices(false);
-    restartBtn.style.display = 'none';
-  }
-
-  buttons.forEach(button => {
-    button.addEventListener('click', () => {
-      playRound(button.id);
-    });
-  });
-
-  restartBtn.addEventListener('click', resetRPSGame);
-
-  // Initialize RPS game on page load
-  resetRPSGame();
-
-  // -------------- Hippo Snake Game Logic ----------------
+  // ---------------- Hippo Snake Game ----------------
   const canvas = document.getElementById('snakeCanvas');
   const ctx = canvas.getContext('2d');
-  const box = 20; // size of snake segment and food
+  const box = 20;
 
   let snake = [];
   let hippoImg = new Image();
-  hippoImg.src = 'https://i.imgur.com/yHPQPR2.png'; // hippo head icon
+  hippoImg.src = 'https://i.imgur.com/yHPQPR2.png';
 
   let watermelonImg = new Image();
-  watermelonImg.src = 'https://i.imgur.com/zfXXAxN.png'; // watermelon icon
+  watermelonImg.src = 'https://i.imgur.com/zfXXAxN.png';
 
   let food = {};
   let direction = 'RIGHT';
@@ -350,21 +106,22 @@
   let gameRunning = false;
 
   function createFood() {
-    food = {
-      x: Math.floor(Math.random() * (canvas.width / box)) * box,
-      y: Math.floor(Math.random() * (canvas.height / box)) * box
-    };
+    let valid = false;
+    while (!valid) {
+      food = {
+        x: Math.floor(Math.random() * (canvas.width / box)) * box,
+        y: Math.floor(Math.random() * (canvas.height / box)) * box
+      };
+      valid = !snake.some(seg => seg.x === food.x && seg.y === food.y);
+    }
   }
 
   function draw() {
-    // Clear canvas with black
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Draw watermelon (food)
     ctx.drawImage(watermelonImg, food.x, food.y, box, box);
 
-    // Draw snake (hippo)
     for (let i = 0; i < snake.length; i++) {
       if (i === 0) {
         ctx.drawImage(hippoImg, snake[i].x, snake[i].y, box, box);
@@ -377,7 +134,6 @@
       }
     }
 
-    // Score text
     document.getElementById('snakeScore').textContent = `Score: ${score}`;
   }
 
@@ -390,13 +146,11 @@
     else if (direction === 'UP') headY -= box;
     else if (direction === 'DOWN') headY += box;
 
-    // Wrap around edges
     if (headX >= canvas.width) headX = 0;
     else if (headX < 0) headX = canvas.width - box;
     if (headY >= canvas.height) headY = 0;
     else if (headY < 0) headY = canvas.height - box;
 
-    // Check self collision
     for (let i = 0; i < snake.length; i++) {
       if (snake[i].x === headX && snake[i].y === headY) {
         gameOver();
@@ -406,12 +160,11 @@
 
     let newHead = {x: headX, y: headY};
 
-    // Check food collision
     if (headX === food.x && headY === food.y) {
       score++;
       createFood();
     } else {
-      snake.pop(); // remove tail segment
+      snake.pop();
     }
 
     snake.unshift(newHead);
@@ -433,7 +186,11 @@
     clearInterval(gameInterval);
     direction = 'RIGHT';
     score = 0;
-    snake = [{x: box * 5, y: box * 5}];
+    snake = [
+      {x: box * 5, y: box * 5},
+      {x: box * 4, y: box * 5},
+      {x: box * 3, y: box * 5}
+    ];
     createFood();
     document.getElementById('snakeRestartBtn').style.display = 'none';
     draw();
@@ -441,10 +198,8 @@
     gameInterval = setInterval(gameLoop, 120);
   }
 
-  // Keyboard controls for snake
   window.addEventListener('keydown', e => {
     if (!gameRunning) return;
-
     if (e.key === 'ArrowLeft' && direction !== 'RIGHT') direction = 'LEFT';
     else if (e.key === 'ArrowRight' && direction !== 'LEFT') direction = 'RIGHT';
     else if (e.key === 'ArrowUp' && direction !== 'DOWN') direction = 'UP';
@@ -453,9 +208,30 @@
 
   document.getElementById('snakeRestartBtn').addEventListener('click', resetSnakeGame);
 
-  // Start with RPS game visible
-  switchToRPS();
+  // ---------------- Tab Switching ----------------
+  const btnRPS = document.getElementById("btnRPS");
+  const btnSnake = document.getElementById("btnSnake");
+  const rpsSection = document.getElementById("rpsSection");
+  const snakeSection = document.getElementById("snakeSection");
 
+  function switchToRPS() {
+    rpsSection.style.display = "block";
+    snakeSection.style.display = "none";
+    clearInterval(gameInterval);
+    gameRunning = false;
+  }
+
+  function switchToSnake() {
+    rpsSection.style.display = "none";
+    snakeSection.style.display = "block";
+    if (!gameRunning) resetSnakeGame();
+  }
+
+  btnRPS.addEventListener("click", switchToRPS);
+  btnSnake.addEventListener("click", switchToSnake);
+
+  // Start on RPS
+  switchToRPS();
 </script>
 </body>
 </html>
