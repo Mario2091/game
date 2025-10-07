@@ -1,237 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>RPSLS & Hippo Snake</title>
-  <style>
-    body {
-      background: black;
-      color: white;
-      text-align: center;
-      font-family: Arial, sans-serif;
-    }
-    #gameButtons button {
-      margin: 5px;
-      padding: 10px;
-      font-size: 18px;
-    }
-    #snakeCanvas {
-      background: black;
-      border: 2px solid white;
-      display: block;
-      margin: 20px auto;
-    }
-    #snakeRestartBtn {
-      display: none;
-      padding: 10px;
-      margin: 10px;
-      font-size: 18px;
-    }
-    .tabButtons button {
-      padding: 10px;
-      margin: 5px;
-      font-size: 16px;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neon Game Hub</title>
+<style>
+  body {
+    background: black;
+    color: white;
+    font-family: 'Orbitron', sans-serif;
+    text-align: center;
+  }
+  button {
+    background: linear-gradient(45deg, #f00, #00f, #a0f);
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 8px;
+    box-shadow: 0 0 15px #f00, 0 0 25px #00f, 0 0 35px #a0f;
+    transition: 0.2s;
+  }
+  button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 30px #f00, 0 0 40px #00f, 0 0 60px #a0f;
+  }
+  h2, h3, p {
+    text-shadow: 0 0 15px #f00, 0 0 25px #00f, 0 0 35px #a0f;
+  }
+  #timer, #humanTimer {
+    font-size: 22px;
+    margin-top: 10px;
+    color: #fff;
+    text-shadow: 0 0 10px #f00, 0 0 25px #a0f;
+  }
+  .section { display: none; }
+  #snakeCanvas {
+    border: 3px solid #a0f;
+    box-shadow: 0 0 20px #f00, 0 0 40px #00f, 0 0 60px #a0f;
+    margin-top: 20px;
+  }
+  #snakeScore {
+    font-size: 20px;
+    margin-top: 10px;
+    color: #f00;
+    text-shadow: 0 0 15px #f00, 0 0 25px #a0f;
+  }
+</style>
 </head>
 <body>
-  <h1>Game Hub</h1>
-  
-  <div class="tabButtons">
-    <button id="btnRPS">RPSLS Game</button>
-    <button id="btnSnake">Hippo Snake</button>
-  </div>
 
-  <!-- RPSLS GAME -->
-  <div id="rpsSection">
-    <h2>Rock Paper Scissors Lizard Spock</h2>
-    <div id="gameButtons">
-      <button onclick="playRPS('rock')">Rock</button>
-      <button onclick="playRPS('paper')">Paper</button>
-      <button onclick="playRPS('scissors')">Scissors</button>
-      <button onclick="playRPS('lizard')">Lizard</button>
-      <button onclick="playRPS('spock')">Spock</button>
-    </div>
-    <p id="result"></p>
-  </div>
+<h1>🎮 Neon Game Hub 🎮</h1>
+<div>
+  <button onclick="showSection('rpsSection')">RPSLS (vs AI)</button>
+  <button onclick="showSection('rpsHumanSection')">RPSLS (2 Players)</button>
+  <button onclick="showSection('snakeSection')">Hippo Snake</button>
+</div>
 
-  <!-- HIPPO SNAKE GAME -->
-  <div id="snakeSection" style="display:none;">
-    <h2>Hippo Snake</h2>
-    <canvas id="snakeCanvas" width="400" height="400"></canvas>
-    <p id="snakeScore">Score: 0</p>
-    <button id="snakeRestartBtn">Restart Game</button>
-  </div>
+<!-- RPSLS vs AI -->
+<div id="rpsSection" class="section">
+  <h2>✊✋✌️🦎🖖 RPSLS vs AI</h2>
+  <h3>Select difficulty</h3>
+  <button onclick="setDifficulty('easy')">Easy</button>
+  <button onclick="setDifficulty('normal')">Normal</button>
+  <button onclick="setDifficulty('hard')">Hard</button>
+  <p>Choose your move:</p>
+  <div id="rpsButtons"></div>
+  <p id="rpsResult"></p>
+  <p id="timer"></p>
+</div>
+
+<!-- RPSLS Human -->
+<div id="rpsHumanSection" class="section">
+  <h2>👥 RPSLS 2 Players</h2>
+  <p>Player 1 choose:</p>
+  <div id="humanP1"></div>
+  <p>Player 2 choose:</p>
+  <div id="humanP2"></div>
+  <p id="humanResult"></p>
+  <p id="humanTimer"></p>
+</div>
+
+<!-- Snake -->
+<div id="snakeSection" class="section">
+  <h2>🐍 Neon Hippo Snake 🐍</h2>
+  <canvas id="snakeCanvas" width="400" height="400"></canvas>
+  <p id="snakeScore">Score: 0</p>
+</div>
 
 <script>
-  // ---------------- RPSLS Game ----------------
-  const choices = ["rock", "paper", "scissors", "lizard", "spock"];
-  const rules = {
-    rock: ["scissors", "lizard"],
-    paper: ["rock", "spock"],
-    scissors: ["paper", "lizard"],
-    lizard: ["spock", "paper"],
-    spock: ["scissors", "rock"]
-  };
+function showSection(id) {
+  document.querySelectorAll(".section").forEach(sec => sec.style.display="none");
+  document.getElementById(id).style.display="block";
+}
 
-  function playRPS(playerChoice) {
-    const compChoice = choices[Math.floor(Math.random() * choices.length)];
-    let outcome = "";
-    if (playerChoice === compChoice) {
-      outcome = "It's a draw!";
-    } else if (rules[playerChoice].includes(compChoice)) {
-      outcome = `You win! ${playerChoice} beats ${compChoice}`;
-    } else {
-      outcome = `You lose! ${compChoice} beats ${playerChoice}`;
-    }
-    document.getElementById("result").textContent = outcome;
+// ================== RPSLS ===================
+const moves = ["Rock","Paper","Scissors","Lizard","Spock"];
+const rules = {
+  Rock: ["Scissors","Lizard"],
+  Paper: ["Rock","Spock"],
+  Scissors: ["Paper","Lizard"],
+  Lizard: ["Spock","Paper"],
+  Spock: ["Scissors","Rock"]
+};
+
+let aiDifficulty = "easy";
+function setDifficulty(level) {
+  aiDifficulty = level;
+  document.getElementById("rpsResult").innerText = "Difficulty set to " + level.toUpperCase();
+}
+
+// Build buttons
+function buildButtons(containerId, callback) {
+  const div = document.getElementById(containerId);
+  div.innerHTML="";
+  moves.forEach(m=>{
+    let b=document.createElement("button");
+    b.innerText=m;
+    b.onclick=()=>callback(m);
+    div.appendChild(b);
+  });
+}
+buildButtons("rpsButtons", playerMove);
+buildButtons("humanP1", p1Move);
+buildButtons("humanP2", p2Move);
+
+function aiMove(playerChoice) {
+  if (aiDifficulty==="easy") {
+    return moves[Math.floor(Math.random()*moves.length)];
   }
-
-  // ---------------- Hippo Snake Game ----------------
-  const canvas = document.getElementById('snakeCanvas');
-  const ctx = canvas.getContext('2d');
-  const box = 20;
-
-  let snake = [];
-  let hippoImg = new Image();
-  hippoImg.src = 'https://i.imgur.com/yHPQPR2.png';
-
-  let watermelonImg = new Image();
-  watermelonImg.src = 'https://i.imgur.com/zfXXAxN.png';
-
-  let food = {};
-  let direction = 'RIGHT';
-  let score = 0;
-  let gameInterval;
-  let gameRunning = false;
-
-  function createFood() {
-    let valid = false;
-    while (!valid) {
-      food = {
-        x: Math.floor(Math.random() * (canvas.width / box)) * box,
-        y: Math.floor(Math.random() * (canvas.height / box)) * box
-      };
-      valid = !snake.some(seg => seg.x === food.x && seg.y === food.y);
+  if (aiDifficulty==="normal") {
+    return moves[Math.floor(Math.random()*moves.length)];
+  }
+  if (aiDifficulty==="hard") {
+    // AI tries to counter player
+    for (let m of moves) {
+      if (rules[m].includes(playerChoice)) return m;
     }
   }
+}
 
-  function draw() {
-    ctx.fillStyle = 'black';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+function getWinner(p1, p2) {
+  if (p1===p2) return "It's a tie!";
+  if (rules[p1].includes(p2)) return p1 + " beats " + p2 + " — Player 1 wins!";
+  return p2 + " beats " + p1 + " — Player 2 wins!";
+}
 
-    ctx.drawImage(watermelonImg, food.x, food.y, box, box);
-
-    for (let i = 0; i < snake.length; i++) {
-      if (i === 0) {
-        ctx.drawImage(hippoImg, snake[i].x, snake[i].y, box, box);
-      } else {
-        ctx.fillStyle = '#ff073a';
-        ctx.shadowColor = '#ff073a';
-        ctx.shadowBlur = 8;
-        ctx.fillRect(snake[i].x, snake[i].y, box, box);
-        ctx.shadowBlur = 0;
-      }
+let roundTimer;
+function startTimer(id, callback) {
+  clearInterval(roundTimer);
+  let time=5;
+  document.getElementById(id).innerText="⏳ Time left: "+time;
+  roundTimer=setInterval(()=>{
+    time--;
+    document.getElementById(id).innerText="⏳ Time left: "+time;
+    if(time<=0){
+      clearInterval(roundTimer);
+      callback();
     }
+  },1000);
+}
 
-    document.getElementById('snakeScore').textContent = `Score: ${score}`;
-  }
+function playerMove(choice) {
+  startTimer("timer", ()=>{
+    let ai=aiMove(choice);
+    let result=getWinner(choice, ai).replace("Player 1","You").replace("Player 2","AI");
+    document.getElementById("rpsResult").innerText = 
+      "You chose "+choice+", AI chose "+ai+". "+result;
+  });
+}
 
-  function update() {
-    let headX = snake[0].x;
-    let headY = snake[0].y;
-
-    if (direction === 'LEFT') headX -= box;
-    else if (direction === 'RIGHT') headX += box;
-    else if (direction === 'UP') headY -= box;
-    else if (direction === 'DOWN') headY += box;
-
-    if (headX >= canvas.width) headX = 0;
-    else if (headX < 0) headX = canvas.width - box;
-    if (headY >= canvas.height) headY = 0;
-    else if (headY < 0) headY = canvas.height - box;
-
-    for (let i = 0; i < snake.length; i++) {
-      if (snake[i].x === headX && snake[i].y === headY) {
-        gameOver();
-        return;
-      }
+let p1Choice=null;
+function p1Move(choice){
+  p1Choice=choice;
+  document.getElementById("humanResult").innerText="Player 1 locked in!";
+  startTimer("humanTimer", ()=>{
+    if(p1Choice==null){
+      document.getElementById("humanResult").innerText="Timeout! Player 1 didn't choose.";
     }
+  });
+}
+function p2Move(choice){
+  if(!p1Choice){document.getElementById("humanResult").innerText="Wait for Player 1!"; return;}
+  let result=getWinner(p1Choice,choice);
+  document.getElementById("humanResult").innerText=
+    "P1: "+p1Choice+" | P2: "+choice+" → "+result;
+  p1Choice=null;
+  clearInterval(roundTimer);
+  document.getElementById("humanTimer").innerText="";
+}
 
-    let newHead = {x: headX, y: headY};
+// ================== Snake ===================
+const canvas=document.getElementById("snakeCanvas");
+const ctx=canvas.getContext("2d");
+let snake=[{x:200,y:200}];
+let direction="RIGHT";
+let food={x:100,y:100};
+let gameRunning=false;
+let gameInterval;
+let score=0;
 
-    if (headX === food.x && headY === food.y) {
-      score++;
-      createFood();
-    } else {
-      snake.pop();
-    }
+function neonColor(i){return ["#f00","#00f","#a0f"][i%3];}
+let foodColorIndex=0;
 
-    snake.unshift(newHead);
-  }
+function drawGame(){
+  ctx.fillStyle="black";
+  ctx.fillRect(0,0,400,400);
 
-  function gameOver() {
-    clearInterval(gameInterval);
-    gameRunning = false;
-    alert(`Game Over! Your score was: ${score}`);
-    document.getElementById('snakeRestartBtn').style.display = 'inline-block';
-  }
-
-  function gameLoop() {
-    update();
-    draw();
-  }
-
-  function resetSnakeGame() {
-    clearInterval(gameInterval);
-    direction = 'RIGHT';
-    score = 0;
-    snake = [
-      {x: box * 5, y: box * 5},
-      {x: box * 4, y: box * 5},
-      {x: box * 3, y: box * 5}
-    ];
-    createFood();
-    document.getElementById('snakeRestartBtn').style.display = 'none';
-    draw();
-    gameRunning = true;
-    gameInterval = setInterval(gameLoop, 120);
-  }
-
-  window.addEventListener('keydown', e => {
-    if (!gameRunning) return;
-    if (e.key === 'ArrowLeft' && direction !== 'RIGHT') direction = 'LEFT';
-    else if (e.key === 'ArrowRight' && direction !== 'LEFT') direction = 'RIGHT';
-    else if (e.key === 'ArrowUp' && direction !== 'DOWN') direction = 'UP';
-    else if (e.key === 'ArrowDown' && direction !== 'UP') direction = 'DOWN';
+  snake.forEach((s,i)=>{
+    ctx.fillStyle=neonColor(i);
+    ctx.shadowColor=ctx.fillStyle;
+    ctx.shadowBlur=15;
+    ctx.fillRect(s.x,s.y,20,20);
+    ctx.shadowBlur=0;
   });
 
-  document.getElementById('snakeRestartBtn').addEventListener('click', resetSnakeGame);
+  ctx.fillStyle=neonColor(foodColorIndex);
+  ctx.shadowColor=ctx.fillStyle;
+  ctx.shadowBlur=25;
+  ctx.fillRect(food.x,food.y,20,20);
+  ctx.shadowBlur=0;
+  foodColorIndex++;
 
-  // ---------------- Tab Switching ----------------
-  const btnRPS = document.getElementById("btnRPS");
-  const btnSnake = document.getElementById("btnSnake");
-  const rpsSection = document.getElementById("rpsSection");
-  const snakeSection = document.getElementById("snakeSection");
+  let head={...snake[0]};
+  if(direction==="UP") head.y-=20;
+  if(direction==="DOWN") head.y+=20;
+  if(direction==="LEFT") head.x-=20;
+  if(direction==="RIGHT") head.x+=20;
 
-  function switchToRPS() {
-    rpsSection.style.display = "block";
-    snakeSection.style.display = "none";
+  snake.unshift(head);
+  if(head.x===food.x&&head.y===food.y){
+    score++;
+    document.getElementById("snakeScore").innerText="Score: "+score;
+    food={x:Math.floor(Math.random()*20)*20,y:Math.floor(Math.random()*20)*20};
+  } else snake.pop();
+
+  if(head.x<0||head.y<0||head.x>=400||head.y>=400||
+    snake.slice(1).some(s=>s.x===head.x&&s.y===head.y)){
     clearInterval(gameInterval);
-    gameRunning = false;
+    alert("Game Over! Final Score: "+score);
+    snake=[{x:200,y:200}];
+    direction="RIGHT";
+    food={x:100,y:100};
+    score=0;
+    document.getElementById("snakeScore").innerText="Score: 0";
+    gameRunning=false;
   }
+}
 
-  function switchToSnake() {
-    rpsSection.style.display = "none";
-    snakeSection.style.display = "block";
-    if (!gameRunning) resetSnakeGame();
+document.addEventListener("keydown", e=>{
+  if(e.key==="ArrowUp"&&direction!=="DOWN")direction="UP";
+  if(e.key==="ArrowDown"&&direction!=="UP")direction="DOWN";
+  if(e.key==="ArrowLeft"&&direction!=="RIGHT")direction="LEFT";
+  if(e.key==="ArrowRight"&&direction!=="LEFT")direction="RIGHT";
+});
+
+document.querySelector("button[onclick*='snakeSection']").addEventListener("click",()=>{
+  if(!gameRunning){
+    gameRunning=true;
+    gameInterval=setInterval(drawGame,150);
   }
-
-  btnRPS.addEventListener("click", switchToRPS);
-  btnSnake.addEventListener("click", switchToSnake);
-
-  // Start on RPS
-  switchToRPS();
+});
 </script>
 </body>
 </html>
+
