@@ -118,15 +118,110 @@ function createFood() {
     y: Math.floor(Math.random()* (canvas.height/box)) * box
   };
 }
-function drawSnake() {
-  ctx.fillStyle="black"; ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.fillStyle="#0f0"; ctx.fillRect(food.x, food.y, box, box);
-  for(let i=0;i<snake.length;i++){
-    ctx.fillStyle=i==0?"#ff00ff":"#00f";
-    ctx.fillRect(snake[i].x,snake[i].y,box,box);
+
+// Rounded rectangle helper for smooth snake body segments
+function roundRect(ctx, x, y, width, height, radius, fill, stroke) {
+  if (typeof stroke === 'undefined') {
+    stroke = true;
   }
-  document.getElementById("snakeScore").textContent="Score: "+score;
+  if (typeof radius === 'undefined') {
+    radius = 5;
+  }
+  ctx.beginPath();
+  ctx.moveTo(x + radius, y);
+  ctx.lineTo(x + width - radius, y);
+  ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+  ctx.lineTo(x + width, y + height - radius);
+  ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+  ctx.lineTo(x + radius, y + height);
+  ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+  ctx.lineTo(x, y + radius);
+  ctx.quadraticCurveTo(x, y, x + radius, y);
+  ctx.closePath();
+  if (fill) {
+    ctx.fill();
+  }
+  if (stroke) {
+    ctx.stroke();
+  }
 }
+
+// Draw the snake's head with glowing eyes
+function drawSnakeHead(x, y) {
+  // Base gradient fill for head
+  let gradient = ctx.createLinearGradient(x, y, x + box, y + box);
+  gradient.addColorStop(0, "#ff00ff");
+  gradient.addColorStop(1, "#800080");
+  ctx.fillStyle = gradient;
+  ctx.strokeStyle = "#ff00ff";
+  ctx.lineWidth = 2;
+  roundRect(ctx, x + 2, y + 2, box - 4, box - 4, 6, true, true);
+
+  // Draw eyes
+  ctx.fillStyle = "#fff";
+  ctx.shadowColor = "#ff00ff";
+  ctx.shadowBlur = 8;
+
+  // Left eye
+  ctx.beginPath();
+  ctx.ellipse(x + box*0.3, y + box*0.35, 4, 6, 0, 0, 2 * Math.PI);
+  ctx.fill();
+
+  // Right eye
+  ctx.beginPath();
+  ctx.ellipse(x + box*0.7, y + box*0.35, 4, 6, 0, 0, 2 * Math.PI);
+  ctx.fill();
+
+  ctx.shadowBlur = 0; // reset shadow
+}
+
+// Draw body segment with gradient and glow
+function drawSnakeBodySegment(x, y) {
+  let gradient = ctx.createLinearGradient(x, y, x + box, y + box);
+  gradient.addColorStop(0, "#3300cc");
+  gradient.addColorStop(1, "#0000ff");
+
+  ctx.fillStyle = gradient;
+  ctx.strokeStyle = "#4400ff";
+  ctx.lineWidth = 2;
+  roundRect(ctx, x + 3, y + 3, box - 6, box - 6, 5, true, true);
+}
+
+function drawSnake() {
+  // Clear canvas
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // Draw glowing food with radial gradient
+  let gradientFood = ctx.createRadialGradient(
+    food.x + box/2, food.y + box/2, box/4,
+    food.x + box/2, food.y + box/2, box
+  );
+  gradientFood.addColorStop(0, "#ff00ff");
+  gradientFood.addColorStop(1, "transparent");
+  ctx.fillStyle = gradientFood;
+  ctx.fillRect(food.x, food.y, box, box);
+
+  // Solid center of food
+  ctx.fillStyle = "#ff00ff";
+  ctx.fillRect(food.x + 4, food.y + 4, box - 8, box - 8);
+
+  // Draw snake segments
+  for (let i = 0; i < snake.length; i++) {
+    let segment = snake[i];
+    let x = segment.x;
+    let y = segment.y;
+
+    if (i === 0) {
+      drawSnakeHead(x, y);
+    } else {
+      drawSnakeBodySegment(x, y);
+    }
+  }
+
+  document.getElementById("snakeScore").textContent = "Score: " + score;
+}
+
 function game() {
   if(pausedForMiniGame) return; // pause snake if in mini-game
   let headX=snake[0].x, headY=snake[0].y;
@@ -224,3 +319,4 @@ function endTTT(msg){
 </script>
 </body>
 </html>
+
