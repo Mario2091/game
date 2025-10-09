@@ -1,299 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Neon Snake + RPS + Tic-Tac-Toe</title>
+<meta charset="UTF-8">
+<title>Snake + RPS + Tic Tac Toe</title>
 <style>
   body {
-    background-color: black;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    text-align: center;
-    color: #ff073a;
-  }
-  h1 {
-    text-shadow: 0 0 10px #ff073a, 0 0 20px #007BFF, 0 0 30px #8000FF;
-    margin-top: 10px;
-  }
-  .tab-buttons {
-    margin: 20px;
-  }
-  button {
-    background-color: black;
-    border: 2px solid #ff073a;
-    color: #ff073a;
-    padding: 10px 20px;
-    margin: 0 10px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: 0.3s;
-  }
-  button:hover {
-    background-color: #ff073a;
-    color: black;
-  }
-  #rpsGame, #snakeGame, #ticTacToeContainer, #rpsPopup {
-    display: none;
-    max-width: 600px;
-    margin: auto;
-  }
-  /* RPS Buttons */
-  #rpsGame button.choice, #rpsPopup button.choice {
-    font-size: 24px;
-    margin: 5px;
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    border: 3px solid #ff073a;
     background: black;
-    color: #ff073a;
-    text-shadow: 0 0 10px #007BFF, 0 0 15px #8000FF;
+    color: #fff;
+    font-family: Arial, sans-serif;
+    text-align: center;
   }
-  #rpsGame button.choice:hover:not(:disabled),
-  #rpsPopup button.choice:hover:not(:disabled) {
-    background-color: #ff073a;
-    color: black;
-  }
-  #result, #popupResult {
-    margin: 20px;
-    font-size: 20px;
-    min-height: 40px;
-    text-shadow: 0 0 10px #007BFF, 0 0 15px #8000FF, 0 0 20px #ff073a;
-  }
-  #computerChoiceDisplay, #popupComputerChoiceDisplay {
-    margin-top: 10px;
-    font-size: 18px;
-  }
-  #computerChoiceDisplay .icon, #popupComputerChoiceDisplay .icon {
-    font-size: 50px;
-  }
-  #scores, #popupScores {
-    font-size: 18px;
-    margin-top: 10px;
-  }
-  #restartBtn, #rpsPopupRestartBtn {
-    display: none;
-    margin-top: 15px;
-  }
-
-  /* Snake Game */
-  #snakeCanvas {
-    background-color: black;
-    border: 3px solid #ff073a;
+  canvas {
+    background: black;
+    border: 3px solid #ff00ff;
     display: block;
     margin: 20px auto;
-    box-shadow: 0 0 20px #007BFF, 0 0 30px #8000FF, 0 0 40px #ff073a;
+    box-shadow: 0 0 20px #ff00ff;
   }
-  #snakeScore {
-    font-size: 22px;
-    margin: 10px 0;
-    text-shadow: 0 0 12px #007BFF,0 0 12px #8000FF;
+  h1 {
+    color: #ff00ff;
+    text-shadow: 0 0 15px #ff00ff, 0 0 25px #00f, 0 0 40px #f00;
   }
-  #snakeRestartBtn {
-    display: none;
-    margin: 15px auto;
-    padding: 10px 20px;
-    font-size: 16px;
+  button {
+    background: black;
+    border: 2px solid #ff00ff;
+    color: #ff00ff;
+    margin: 5px;
+    padding: 10px;
+    border-radius: 6px;
+    text-shadow: 0 0 10px #ff00ff, 0 0 15px #00f;
     cursor: pointer;
-    background-color: black;
-    border: 2px solid #ff073a;
-    color: #ff073a;
-    border-radius: 5px;
   }
-  #snakeRestartBtn:hover {
-    background-color: #ff073a;
+  button:hover {
+    background: #ff00ff;
     color: black;
   }
-
+  /* Popups */
+  .popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: black;
+    padding: 20px;
+    border: 3px solid #ff00ff;
+    display: none;
+    z-index: 1000;
+    box-shadow: 0 0 30px #ff00ff, 0 0 40px #00f, 0 0 50px #f00;
+  }
+  .popup h2 {
+    color: #ff00ff;
+    margin-bottom: 15px;
+  }
   /* Tic Tac Toe */
-  #ticTacToeContainer {
-    margin-top: 20px;
-  }
-  #ticTacToeGrid {
+  #ticTacToeBoard {
     display: grid;
-    margin: auto;
-    gap: 5px;
+    grid-template-columns: repeat(3, 80px);
+    grid-gap: 5px;
+    justify-content: center;
   }
-  .tttCell {
+  #ticTacToeBoard button {
     width: 80px;
     height: 80px;
-    font-size: 50px;
-    text-align: center;
-    vertical-align: middle;
-    cursor: pointer;
-    border: 2px solid #ff073a;
-    color: #ff073a;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: 0.3s;
-  }
-  .tttCell:hover {
-    background-color: #007BFF;
-    color: black;
-    box-shadow: 0 0 10px #8000FF;
+    font-size: 32px;
+    color: #fff;
+    border: 2px solid #ff00ff;
+    text-shadow: 0 0 10px #ff00ff, 0 0 15px #00f, 0 0 25px #f00;
   }
 </style>
 </head>
 <body>
+<h1>Snake + RPSLS + TicTacToe (Neon Edition)</h1>
+<canvas id="snakeCanvas" width="400" height="400"></canvas>
+<div id="snakeScore">Score: 0</div>
+<button onclick="resetSnake()">Restart Snake</button>
 
-<h1>Neon Snake + RPS + Tic-Tac-Toe</h1>
-<div class="tab-buttons">
-  <button id="btnRPS">RPSLS Game</button>
-  <button id="btnSnake">Snake Game</button>
-</div>
-
-<!-- Main RPS Game -->
-<div id="rpsGame">
+<!-- RPS Popup -->
+<div id="rpsPopup" class="popup">
+  <h2>Play RPSLS to Continue!</h2>
   <div>
-    <button class="choice" id="rock">✊<br>Rock</button>
-    <button class="choice" id="paper">✋<br>Paper</button>
-    <button class="choice" id="scissors">✌️<br>Scissors</button>
-    <button class="choice" id="lizard">🦎<br>Lizard</button>
-    <button class="choice" id="spock">🖖<br>Spock</button>
-    <button class="choice" id="snake">🐍<br>Snake</button>
+    <button onclick="playRPS('rock')">✊</button>
+    <button onclick="playRPS('paper')">✋</button>
+    <button onclick="playRPS('scissors')">✌️</button>
+    <button onclick="playRPS('lizard')">🦎</button>
+    <button onclick="playRPS('spock')">🖖</button>
   </div>
-  <div id="result">Make your choice!</div>
-  <div id="computerChoiceDisplay"></div>
-  <div id="scores">
-    Player: <span id="playerScore">0</span> | Computer: <span id="computerScore">0</span>
-  </div>
-  <div id="roundCounter">Round 0 of 5</div>
-  <button id="restartBtn">Restart Game</button>
-</div>
-
-<!-- Snake Game -->
-<div id="snakeGame">
-  <canvas id="snakeCanvas" width="400" height="400"></canvas>
-  <div id="snakeScore">Score: 0</div>
-  <button id="snakeRestartBtn">Restart Snake Game</button>
-  <p>Use arrow keys to move the hippo!</p>
-</div>
-
-<!-- RPS Popup for Snake -->
-<div id="rpsPopup">
-  <h2>RPS Challenge!</h2>
-  <p>Select difficulty:</p>
-  <button class="choice" id="easyAI">Easy</button>
-  <button class="choice" id="normalAI">Normal</button>
-  <button class="choice" id="hardAI">Hard</button>
-  <div id="popupResult"></div>
-  <div id="popupComputerChoiceDisplay"></div>
-  <button id="rpsPopupRestartBtn">Restart RPS</button>
+  <div id="rpsResult"></div>
 </div>
 
 <!-- Tic Tac Toe Popup -->
-<div id="ticTacToeContainer">
-  <h2>Neon Tic-Tac-Toe</h2>
-  <div>
-    Grid size: <input type="number" id="gridSizeInput" min="3" max="6" value="3">
-    <button id="setGridSizeBtn">Set Grid Size</button>
-  </div>
-  <div id="ticTacToeGrid"></div>
+<div id="tttPopup" class="popup">
+  <h2>Win Tic Tac Toe!</h2>
+  <div id="ticTacToeBoard"></div>
+  <div id="tttResult"></div>
 </div>
 
 <script>
-  // ----------------- Tab Switching -----------------
-  const rpsDiv = document.getElementById('rpsGame');
-  const snakeDiv = document.getElementById('snakeGame');
-  const btnRPS = document.getElementById('btnRPS');
-  const btnSnake = document.getElementById('btnSnake');
+/* ---------------- Snake ---------------- */
+const canvas = document.getElementById("snakeCanvas");
+const ctx = canvas.getContext("2d");
+const box = 20;
 
-  btnRPS.addEventListener('click', ()=>{rpsDiv.style.display='block'; snakeDiv.style.display='none';});
-  btnSnake.addEventListener('click', ()=>{rpsDiv.style.display='none'; snakeDiv.style.display='block';});
+let snake, food, direction, score, snakeInterval;
+let pausedForMiniGame = false;
 
-  // ----------------- Main RPS Logic -----------------
-  let playerScore=0, computerScore=0, roundNumber=0;
-  const maxRounds=5, winScore=3;
-  const choices=['rock','paper','scissors','lizard','spock','snake'];
-  const choiceIcons={rock:'✊',paper:'✋',scissors:'✌️',lizard:'🦎',spock:'🖖',snake:'🐍'};
-  const beats={rock:['scissors','snake'],paper:['rock','spock'],scissors:['paper','snake'],lizard:['paper','spock'],spock:['rock','scissors'],snake:['paper','lizard']};
-  const interactionMessages={'rockscissors':'Rock crushes Scissors','rocksnake':'Rock crushes Snake','paperrock':'Paper covers Rock','paperspock':'Paper disproves Spock','scissorspaper':'Scissors cut Paper','scissorssnake':'Scissors decapitate Snake','lizardpaper':'Lizard eats Paper','lizardspock':'Lizard poisons Spock','spockrock':'Spock vaporizes Rock','spockscissors':'Spock smashes Scissors','snakepaper':'Snake bites Paper','snakelizard':'Snake bites Lizard'};
-  const buttons=document.querySelectorAll('#rpsGame .choice');
-  const resultDiv=document.getElementById('result');
-  const playerScoreSpan=document.getElementById('playerScore');
-  const computerScoreSpan=document.getElementById('computerScore');
-  const roundCounter=document.getElementById('roundCounter');
-  const restartBtn=document.getElementById('restartBtn');
-  const computerChoiceDisplay=document.getElementById('computerChoiceDisplay');
-
-  function computerPlay(){return choices[Math.floor(Math.random()*choices.length)];}
-  function disableChoices(state){buttons.forEach(btn=>btn.disabled=state);}
-  function updateScores(){playerScoreSpan.textContent=playerScore;computerScoreSpan.textContent=computerScore;}
-  function updateRoundCounter(){roundCounter.textContent=`Round ${roundNumber} of ${maxRounds}`;}
-  function showComputerChoice(choice){computerChoiceDisplay.innerHTML=`<div><div class="icon">${choiceIcons[choice]}</div><div>Computer chose ${choice.charAt(0).toUpperCase()+choice.slice(1)}</div></div>`;}
-  function getInteractionMessage(winner,loser){return interactionMessages[winner+loser]||interactionMessages[loser+winner]||'';}
-  function determineWinner(player,computer){if(player===computer)return'draw';if(beats[player].includes(computer))return'player';if(beats[computer].includes(player))return'computer';return'draw';}
-  function playRound(playerChoice){
-    disableChoices(true); roundNumber++; updateRoundCounter(); resultDiv.textContent="Computer is choosing..."; computerChoiceDisplay.innerHTML="";
-    setTimeout(()=>{
-      const computerChoice=computerPlay(); showComputerChoice(computerChoice);
-      const winner=determineWinner(playerChoice,computerChoice);
-      if(winner==='player'){playerScore++; resultDiv.textContent=`You Win! ${getInteractionMessage(playerChoice,computerChoice)}.`;}
-      else if(winner==='computer'){computerScore++; resultDiv.textContent=`You Lose! ${getInteractionMessage(computerChoice,playerChoice)}.`;}
-      else{resultDiv.textContent=`It's a Draw! Both chose ${playerChoice}.`;}
-      updateScores();
-      if(playerScore===winScore||computerScore===winScore||roundNumber>=maxRounds){endGame();}else{disableChoices(false);}
-    },1200);
+function resetSnake() {
+  snake = [{x: 5*box, y: 5*box}];
+  direction = "RIGHT";
+  score = 0;
+  createFood();
+  clearInterval(snakeInterval);
+  snakeInterval = setInterval(game, 150);
+}
+function createFood() {
+  food = {
+    x: Math.floor(Math.random()* (canvas.width/box)) * box,
+    y: Math.floor(Math.random()* (canvas.height/box)) * box
+  };
+}
+function drawSnake() {
+  ctx.fillStyle="black"; ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle="#0f0"; ctx.fillRect(food.x, food.y, box, box);
+  for(let i=0;i<snake.length;i++){
+    ctx.fillStyle=i==0?"#ff00ff":"#00f";
+    ctx.fillRect(snake[i].x,snake[i].y,box,box);
   }
-  function endGame(){disableChoices(true); restartBtn.style.display='inline-block';}
-  function resetRPSGame(){playerScore=0; computerScore=0; roundNumber=0; updateScores(); updateRoundCounter(); resultDiv.textContent="Make your choice!"; computerChoiceDisplay.innerHTML=""; disableChoices(false); restartBtn.style.display='none';}
-  buttons.forEach(button=>button.addEventListener('click',()=>playRound(button.id)));
-  restartBtn.addEventListener('click',resetRPSGame);
-  resetRPSGame();
+  document.getElementById("snakeScore").textContent="Score: "+score;
+}
+function game() {
+  if(pausedForMiniGame) return; // pause snake if in mini-game
+  let headX=snake[0].x, headY=snake[0].y;
+  if(direction==="LEFT") headX-=box;
+  if(direction==="RIGHT") headX+=box;
+  if(direction==="UP") headY-=box;
+  if(direction==="DOWN") headY+=box;
+  if(headX>=canvas.width) headX=0; if(headX<0) headX=canvas.width-box;
+  if(headY>=canvas.height) headY=0; if(headY<0) headY=canvas.height-box;
+  for(let i=0;i<snake.length;i++){ if(snake[i].x===headX && snake[i].y===headY){resetSnake(); return;} }
+  let newHead={x:headX,y:headY};
+  if(headX===food.x && headY===food.y){
+    score++;
+    pausedForMiniGame=true;
+    openRPS(); // Pause and open RPS
+  } else { snake.pop(); }
+  snake.unshift(newHead);
+  drawSnake();
+}
+window.addEventListener("keydown",e=>{
+  if(e.key==="ArrowLeft"&&direction!=="RIGHT")direction="LEFT";
+  if(e.key==="ArrowRight"&&direction!=="LEFT")direction="RIGHT";
+  if(e.key==="ArrowUp"&&direction!=="DOWN")direction="UP";
+  if(e.key==="ArrowDown"&&direction!=="UP")direction="DOWN";
+});
+resetSnake();
 
-  // ----------------- Snake Logic -----------------
-  const canvas=document.getElementById('snakeCanvas');
-  const ctx=canvas.getContext('2d');
-  const box=20;
-  let snake=[{x:5*box,y:5*box}],direction='RIGHT',score=0,gameInterval,gameRunning=false,food={};
-  let hippoImg=new Image(); hippoImg.src='https://i.imgur.com/yHPQPR2.png';
-  let watermelonImg=new Image(); watermelonImg.src='https://i.imgur.com/zfXXAxN.png';
-
-  function createFood(){food={x:Math.floor(Math.random()*(canvas.width/box))*box, y:Math.floor(Math.random()*(canvas.height/box))*box};}
-  function draw(){
-    ctx.fillStyle='black'; ctx.fillRect(0,0,canvas.width,canvas.height);
-    ctx.drawImage(watermelonImg,food.x,food.y,box,box);
-    for(let i=0;i<snake.length;i++){
-      if(i===0){ctx.drawImage(hippoImg,snake[i].x,snake[i].y,box,box);}
-      else{ctx.fillStyle='#ff073a'; ctx.shadowColor='#007BFF'; ctx.shadowBlur=10; ctx.fillRect(snake[i].x,snake[i].y,box,box); ctx.shadowBlur=0;}
-    }
-    document.getElementById('snakeScore').textContent=`Score: ${score}`;
+/* ---------------- RPS ---------------- */
+const rpsPopup=document.getElementById("rpsPopup");
+const rpsResult=document.getElementById("rpsResult");
+function openRPS(){ rpsPopup.style.display="block"; }
+function playRPS(player){
+  const choices=["rock","paper","scissors","lizard","spock"];
+  const comp=choices[Math.floor(Math.random()*choices.length)];
+  let winner="draw";
+  const beats={
+    rock:["scissors","lizard"],paper:["rock","spock"],
+    scissors:["paper","lizard"],lizard:["spock","paper"],spock:["scissors","rock"]
+  };
+  if(beats[player].includes(comp)) winner="player";
+  else if(beats[comp].includes(player)) winner="computer";
+  rpsResult.textContent=`You: ${player} | Computer: ${comp} => ${winner}`;
+  if(winner==="player"||winner==="draw"){ // success → play TicTacToe
+    rpsPopup.style.display="none";
+    openTTT();
+  } else {
+    resetSnake(); // lose → snake restarts
+    rpsPopup.style.display="none";
+    pausedForMiniGame=false;
   }
+}
 
-  function update(){
-    let headX=snake[0].x; let headY=snake[0].y;
-    if(direction==='LEFT')headX-=box; else if(direction==='RIGHT')headX+=box;
-    else if(direction==='UP')headY-=box; else if(direction==='DOWN')headY+=box;
-
-    if(headX>=canvas.width)headX=0; else if(headX<0)headX=canvas.width-box;
-    if(headY>=canvas.height)headY=0; else if(headY<0)headY=canvas.height-box;
-
-    for(let i=0;i<snake.length;i++){if(snake[i].x===headX && snake[i].y===headY){gameOver(); return;}}
-
-    let newHead={x:headX,y:headY};
-
-    if(headX===food.x && headY===food.y){pauseForRPS();} else{snake.pop();}
-    snake.unshift(newHead);
+/* ---------------- Tic Tac Toe ---------------- */
+const tttPopup=document.getElementById("tttPopup");
+const tttBoard=document.getElementById("ticTacToeBoard");
+const tttResult=document.getElementById("tttResult");
+let tttCells;
+function openTTT(){
+  tttPopup.style.display="block";
+  tttBoard.innerHTML="";
+  tttResult.textContent="";
+  for(let i=0;i<9;i++){
+    let btn=document.createElement("button");
+    btn.addEventListener("click",()=>makeMove(i,btn));
+    tttBoard.appendChild(btn);
   }
-
-  function gameLoop(){update(); draw();}
-  function resetSnakeGame(){clearInterval(gameInterval); direction='RIGHT'; score=0; snake=[{x:5*box,y:5*box}]; createFood(); draw(); gameRunning=true; gameInterval=setInterval(gameLoop,120); document.getElementById('snakeRestartBtn').style.display='none';}
-  function gameOver(){clearInterval(gameInterval); gameRunning=false; alert(`Game Over! Score: ${score}`); document.getElementById('snakeRestartBtn').style.display='inline-block';}
-  window.addEventListener('keydown',e=>{if(!gameRunning)return;if(e.key==='ArrowLeft' && direction!=='RIGHT')direction='LEFT'; else if(e.key==='ArrowRight' && direction!=='LEFT')direction='RIGHT'; else if(e.key==='ArrowUp' && direction!=='DOWN')direction='UP'; else if(e.key==='ArrowDown' && direction!=='UP')direction='DOWN';});
-  document.getElementById('snakeRestartBtn').addEventListener('click',resetSnakeGame);
-  resetSnakeGame();
-
-  // ----------------- RPS Popup Logic -----------------
-  const rpsPopup=document.getElementById('rpsPopup');
-  const popupResult=document.getElementById('popupResult');
-  const popupComputerChoiceDisplay=document.getElementById('popupComputerChoiceDisplay');
-
-  function pauseForRPS(){gameRunning=false; clearInterval(gameInterval); rpsPopup.style.display='block';}
-  function resumeSnakeAfterRPS(){rpsPopup.style.display='none'; gameRunning=true; gameInterval=setInterval(gameLoop,120); score++; createFood(); draw();}
-
+  tttCells=Array(9).fill("");
+}
+function makeMove(i,btn){
+  if(tttCells[i]!=="")return;
+  tttCells[i]="X"; btn.textContent="X";
+  if(checkWin("X")){ endTTT("You Win!"); return; }
+  if(tttCells.every(c=>c!=="")){ endTTT("Draw!"); return; }
+  compMove();
+}
+function compMove(){
+  let empty=tttCells.map((c,idx)=>c===""?idx:null).filter(c=>c!==null);
+  let choice=empty[Math.floor(Math.random()*empty.length)];
+  tttCells[choice]="O";
+  tttBoard.children[choice].textContent="O";
+  if(checkWin("O")){ endTTT("Computer Wins!"); }
+}
+function checkWin(sym){
+  const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  return wins.some(w=>w.every(i=>tttCells[i]===sym));
+}
+function endTTT(msg){
+  tttResult.textContent=msg;
+  setTimeout(()=>{
+    tttPopup.style.display="none";
+    pausedForMiniGame=false; // Resume snake
+    createFood(); // new food after
+  },1500);
+}
 </script>
 </body>
 </html>
